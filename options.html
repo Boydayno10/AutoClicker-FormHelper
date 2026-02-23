@@ -1,582 +1,536 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Auto Clicker - Options</title>
-    <style>
-      html, body { height: 100%; }
-      html { background: #0b1020; }
-      body { margin: 0; background: #0b1020; color: #e5e7eb; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-
-      .acfh-skeleton-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483647;
-        background: radial-gradient(circle at top left, rgba(0, 132, 255, 0.18), transparent 55%),
-                    radial-gradient(circle at bottom right, rgba(130, 87, 230, 0.24), transparent 55%),
-                    #020617;
-        box-sizing: border-box;
-        overflow: hidden;
-        user-select: none;
-      }
-
-      /* Prevent interactions during load */
-      .acfh-skeleton-overlay * {
-        pointer-events: none;
-      }
-
-      .sk {
-        position: relative;
-        overflow: hidden;
-        border-radius: 12px;
-        background: rgba(255,255,255,.06);
-      }
-      .sk::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        transform: translateX(-60%);
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
-        animation: shimmer 1.15s ease-in-out infinite;
-      }
-      @keyframes shimmer { 0% { transform: translateX(-60%);} 100% { transform: translateX(60%);} }
-
-      .sk-line { height: 12px; border-radius: 999px; }
-      .sk-line.sm { height: 10px; }
-      .sk-line.lg { height: 16px; }
-      .sk-pill { height: 34px; border-radius: 999px; }
-      .sk-label { height: 10px; border-radius: 999px; opacity: .9; }
-      .sk-circle { width: 32px; height: 32px; border-radius: 8px; }
-
-      .sk-icon { width: 36px; height: 36px; border-radius: 10px; }
-      .sk-icon.sm { width: 34px; height: 34px; border-radius: 8px; }
-
-      .acfh-skeleton-note { margin-top: 14px; font-size: 12px; opacity: .78; }
-
-      .acfh-sr-only {
-        position: absolute !important;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
-
-      /* === Layout CSS (scoped) – mirrors supabase_seed/web/options.html + options.css structure === */
-      .acfh-skeleton-overlay header.site-header {
-        background-color: rgba(15, 23, 42, 0.96);
-        color: #e5e7eb;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-        position: relative;
-        z-index: 50;
-      }
-
-      .acfh-skeleton-overlay .top-header-bar {
-        background-color: rgba(15, 23, 42, 0.96);
-        width: 100%;
-        height: 56px;
-        padding: 0 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        z-index: 200;
-        box-sizing: border-box;
-      }
-
-      .acfh-skeleton-overlay .topbar-inner {
-        max-width: 1200px;
-        width: 100%;
-        flex: 1;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-      }
-
-      .acfh-skeleton-overlay .topbar-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .acfh-skeleton-overlay .site-logo-square {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        background: transparent;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-      }
-
-      .acfh-skeleton-overlay .navbar ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        gap: 16px;
-      }
-
-      .acfh-skeleton-overlay .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-left: auto;
-      }
-
-      .acfh-skeleton-overlay .topbar-links {
-        display: flex;
-        gap: 10px;
-      }
-
-      .acfh-skeleton-overlay .config-content {
-        display: flex;
-        width: 100%;
-        max-width: 1400px;
-        margin: 62px auto 0 auto;
-        height: calc(100vh - 116px);
-        min-height: 0;
-        border-radius: 16px 16px 0 0;
-        overflow: hidden;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
-        background: radial-gradient(circle at top left, rgba(0, 132, 255, 0.18), transparent 55%),
-                    radial-gradient(circle at bottom right, rgba(130, 87, 230, 0.24), transparent 55%),
-                    #020617;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-      }
-
-      .acfh-skeleton-overlay .config-sidebar {
-        width: 270px;
-        background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 55%),
-                    radial-gradient(circle at bottom, rgba(45, 212, 191, 0.08), transparent 60%),
-                    rgba(27, 31, 43, 0.95);
-        border-right: 1px solid rgba(30, 64, 175, 0.45);
-        padding: 15px 0;
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 0;
-        overflow: hidden;
-        min-height: 0;
-        box-sizing: border-box;
-      }
-
-      .acfh-skeleton-overlay .sidebar-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 0 15px 15px;
-        border-bottom: 1px solid rgba(255,255,255,.08);
-        margin-bottom: 15px;
-        box-sizing: border-box;
-      }
-
-      .acfh-skeleton-overlay .config-list {
-        padding: 15px;
-        background: transparent;
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow: hidden;
-        box-sizing: border-box;
-      }
-
-      .acfh-skeleton-overlay .sk-config-item {
-        padding: 10px 12px;
-        border-radius: 10px;
-        background: rgba(2, 6, 23, 0.45);
-        border: 1px solid rgba(255,255,255,.06);
-        box-shadow: 0 8px 18px rgba(0,0,0,.35);
-        display: grid;
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-
-      .acfh-skeleton-overlay .config-details {
-        flex-grow: 1;
-        background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 55%),
-                    rgba(32, 36, 53, 0.96);
-        padding: 24px 24px 20px 24px;
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-        overflow: hidden;
-        box-sizing: border-box;
-      }
-
-      .acfh-skeleton-overlay .details-header {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 24px;
-        padding-bottom: 18px;
-        border-bottom: 1px solid rgba(255,255,255,.08);
-      }
-
-      .acfh-skeleton-overlay .details-header-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-      }
-
-      .acfh-skeleton-overlay .config-header-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr 110px;
-        gap: 12px;
-      }
-
-      .acfh-skeleton-overlay .config-name-input,
-      .acfh-skeleton-overlay .config-url-input,
-      .acfh-skeleton-overlay .config-init-wait-input {
-        display: grid;
-        gap: 8px;
-      }
-
-      .acfh-skeleton-overlay .action-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 6px;
-      }
-
-      .acfh-skeleton-overlay .action-list-headers {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: 42px 1fr 1.1fr 0.7fr 0.6fr 0.6fr 46px;
-        gap: 12px;
-        align-items: center;
-        padding: 10px 8px;
-        border-radius: 10px;
-        background: rgba(2, 6, 23, 0.55);
-        border: 1px solid rgba(255,255,255,.06);
-      }
-
-      .acfh-skeleton-overlay .xpath-actions-table {
-        margin-top: 10px;
-        border-radius: 12px;
-        padding: 12px;
-        background: rgba(255,255,255,.02);
-        border: 1px solid rgba(255,255,255,.06);
-        overflow: hidden;
-      }
-
-      .acfh-skeleton-overlay .sk-row {
-        display: grid;
-        grid-template-columns: 42px 1fr 1.1fr 0.7fr 0.6fr 0.6fr 46px;
-        gap: 12px;
-        align-items: center;
-        padding: 10px 4px;
-      }
-
-      .acfh-skeleton-overlay .sk-actions {
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
-      }
-
-      .acfh-skeleton-overlay .sk-divider { height: 1px; background: rgba(255,255,255,.06); margin: 10px 0; }
-
-      /* === Mobile adjustments (do not affect desktop) === */
-      @media (max-width: 520px) {
-        .acfh-skeleton-overlay {
-          overflow: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-
-        .acfh-skeleton-overlay .top-header-bar {
-          padding: 0 12px;
-          height: 54px;
-        }
-
-        .acfh-skeleton-overlay .topbar-inner {
-          gap: 12px;
-        }
-
-        /* Mobile header is compact; avoid overflow */
-        .acfh-skeleton-overlay .navbar {
-          display: none;
-        }
-
-        .acfh-skeleton-overlay .topbar-left > .sk.sk-pill {
-          width: 140px !important;
-        }
-
-        .acfh-skeleton-overlay .config-content {
-          margin-top: 58px;
-          height: auto;
-          min-height: calc(100vh - 84px);
-          flex-direction: column;
-          border-radius: 14px 14px 0 0;
-        }
-
-        .acfh-skeleton-overlay .config-sidebar {
-          width: 100%;
-          border-right: 0;
-          border-bottom: 1px solid rgba(30, 64, 175, 0.35);
-          padding: 12px 0;
-          overflow: visible;
-        }
-
-        .acfh-skeleton-overlay .sidebar-header {
-          padding: 0 12px 12px;
-          margin-bottom: 12px;
-          gap: 10px;
-          flex-wrap: wrap;
-        }
-
-        /* New Config + Search stack like the real mobile page */
-        .acfh-skeleton-overlay .sidebar-header > .sk.sk-pill {
-          flex: 1 1 100%;
-          width: 100% !important;
-        }
-
-        .acfh-skeleton-overlay .sidebar-header > .sk:not(.sk-icon):not(.sk-pill) {
-          flex: 1 1 100%;
-        }
-
-        .acfh-skeleton-overlay .config-list {
-          padding: 0 12px 12px;
-          overflow: visible;
-        }
-
-        .acfh-skeleton-overlay .config-list-desktop {
-          display: none;
-        }
-
-        .acfh-skeleton-overlay .config-list-mobile {
-          display: block;
-        }
-
-        .acfh-skeleton-overlay .config-details {
-          padding: 16px 12px 16px;
-          overflow: visible;
-        }
-
-        .acfh-skeleton-overlay .details-header {
-          margin-bottom: 16px;
-          padding-bottom: 14px;
-        }
-
-        .acfh-skeleton-overlay .details-header-top {
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-
-        .acfh-skeleton-overlay .config-header-row {
-          grid-template-columns: 1fr;
-          gap: 12px;
-        }
-
-        /* On mobile the actions table scrolls horizontally */
-        .acfh-skeleton-overlay .action-list-headers,
-        .acfh-skeleton-overlay .sk-row {
-          min-width: 720px;
-        }
-
-        .acfh-skeleton-overlay .xpath-actions-table {
-          overflow-x: auto;
-          overflow-y: hidden;
-        }
-      }
-    </style>
-    <script>
-      (function () {
-        var DEFAULT_ORIGIN = 'https://extension-server-lv3j.onrender.com';
-        var origin = DEFAULT_ORIGIN;
-        try {
-          var stored = (window.localStorage && localStorage.getItem('ACFH_FLASK_ORIGIN')) || '';
-          stored = String(stored || '').trim();
-          var looksLocal = /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?\/?$/i.test(stored);
-          origin = (stored && !looksLocal ? stored : DEFAULT_ORIGIN).replace(/\/+$/, '');
-
-          // The remote bootstrap.js still defaults to localhost; persist the chosen origin
-          // so the bootstrap fetches HTML/assets from Render by default.
-          if (window.localStorage && (!stored || looksLocal)) {
-            localStorage.setItem('ACFH_FLASK_ORIGIN', origin);
-          }
-        } catch (e) {
-          origin = DEFAULT_ORIGIN;
-        }
-        var s = document.createElement('script');
-        s.src = origin + '/bootstrap.js';
-        s.defer = true;
-        document.head.appendChild(s);
-      })();
-    </script>
-  </head>
-  <body>
-    <noscript>Esta página precisa de JavaScript.</noscript>
-
-    <div class="acfh-skeleton-overlay acfh-loading-overlay" role="status" aria-live="polite" aria-label="Carregando configurações">
-      <header class="site-header" aria-hidden="true">
+﻿<!DOCTYPE html>
+<html lang="en" class="acfh-lang-init-pending">
+<head>
+    <base href="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/">
+    <meta charset="UTF-8">
+    <meta name="google-adsense-account" content="ca-pub-7923004905601195">
+    <title>Auto Clicker - Form Helper</title>
+    <!-- Icon + assets at the web project level -->
+    <link rel="icon" href="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/images/logo.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="options.css">
+    <!-- CodeMirror (shared at web /lib level) -->
+    <link rel="stylesheet" href="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/lib/codemirror/codemirror.css">
+    <!-- monokai.css is directly in /lib/codemirror/ -->
+    <link rel="stylesheet" href="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/lib/codemirror/monokai.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923004905601195"
+     crossorigin="anonymous"></script>
+    <script src="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/lib/codemirror/codemirror.js"></script>
+    <script src="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="https://bfjhgisfzdsefjjojbov.supabase.co/storage/v1/object/public/web/lib/codemirror/addon/edit/matchbrackets.js"></script>
+</head>
+<body>
+    <header class="site-header">
         <div class="top-header-bar">
-          <div class="topbar-inner">
-            <div class="topbar-left">
-              <div class="site-logo-square"><div class="sk sk-circle" style="width: 24px; height: 24px; border-radius: 6px;"></div></div>
-              <nav class="navbar" aria-label="Main navigation">
-                <ul>
-                  <li><div class="sk sk-pill" style="width: 56px; height: 28px;"></div></li>
-                  <li><div class="sk sk-pill" style="width: 56px; height: 28px;"></div></li>
-                  <li><div class="sk sk-pill" style="width: 92px; height: 28px;"></div></li>
-                </ul>
-              </nav>
-              <div class="sk sk-pill" style="width: 220px; height: 28px;"></div>
-            </div>
-            <div class="topbar-right">
-              <div class="topbar-links">
-                <div class="sk sk-icon sm"></div>
-                <div class="sk sk-icon sm"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+            <div class="topbar-inner">
+                <div class="topbar-left">
+                    <a href="http://127.0.0.1:5500/index.html" class="site-logo-square" aria-label="Auto Clicker - Form Helper home">
+                        A
+                    </a>
+                    <nav class="navbar" aria-label="Main navigation">
+                        <ul>
+                            <li><a href="http://127.0.0.1:5500/index.html#docs">Docs</a></li>
+                            <li><a href="http://127.0.0.1:5500/index.html#teste">Test</a></li>
+                            <li><a href="http://127.0.0.1:5500/index.html#privacy">Privacy policy</a></li>
+                        </ul>
+                    </nav>
+                    <span class="topbar-title-desktop">Auto Clicker - Form Helper</span>
+                </div>
 
-      <section id="baixar" class="conteudo active-section" aria-hidden="true">
+                <div class="topbar-right">
+                    <button class="topbar-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                    <div class="topbar-links">
+                        <a href="https://github.com/Boydayno10/Auto-Clicker---Form-Helper" class="topbar-icon-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" role="img" class="navbar-nav-svg" height="16" width="16">
+                                <title>GitHub</title>
+                                <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.youtube.com/@mozinsanou4136" class="topbar-icon-link" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" role="img" class="navbar-nav-svg" height="16" width="16">
+                                <title>YouTube</title>
+                                <path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="topbar-menu-overlay" hidden></div>
+    <aside class="topbar-menu" hidden aria-label="Menu">
+        <div class="topbar-menu-header">
+            <span class="topbar-menu-title">Auto Clicker - Form Helper</span>
+            <button class="topbar-menu-close" type="button" aria-label="Close menu">Ã</button>
+        </div>
+        <div class="topbar-menu-section">
+            <a class="topbar-menu-link" href="http://127.0.0.1:5500/index.html#docs">Docs</a>
+            <a class="topbar-menu-link" href="http://127.0.0.1:5500/index.html#teste">Test</a>
+            <a class="topbar-menu-link" href="http://127.0.0.1:5500/index.html#privacy">Privacy policy</a>
+        </div>
+        <div class="topbar-menu-section topbar-menu-section-social">
+            <a class="topbar-menu-iconlink" href="https://github.com/Boydayno10/Auto_Click_Iframe" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 499.36" role="img" class="navbar-nav-svg" height="16" width="16">
+                    <title>GitHub</title>
+                    <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"></path>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            <a class="topbar-menu-iconlink" href="https://www.youtube.com/@mozinsanou4136" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" role="img" class="navbar-nav-svg" height="16" width="16">
+                    <title>YouTube</title>
+                    <path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path>
+                </svg>
+                <span>YouTube</span>
+            </a>
+        </div>
+    </aside>
+
+    <section id="baixar" class="conteudo active-section">
+     
+
+        <div class="save-progress-bar"></div>
+
+        <div id="saveNotification" class="save-notification">
+            <span class="save-text"></span>
+        </div>
+
         <div class="config-content">
-          <div class="config-sidebar">
-            <div class="sidebar-header">
-              <div class="sk sk-pill" style="width: 118px; height: 34px; border-radius: 8px;"></div>
-              <div class="sk" style="flex: 1; height: 34px; border-radius: 8px;"></div>
-              <div class="sk sk-icon sm"></div>
-              <div class="sk sk-icon sm"></div>
-            </div>
-            <div class="config-list">
-              <div class="config-list-desktop">
-                <div class="sk-config-item">
-                  <div class="sk sk-line" style="width: 72%; height: 14px;"></div>
-                  <div class="sk sk-line sm" style="width: 92%;"></div>
+            <div class="config-sidebar">
+                <div class="sidebar-header">
+                    <button class="btn-new-config">
+                        New config
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" height="16" width="16" style="margin-left: 6px;">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="searchConfig" placeholder="Search configuration" list="configSuggestions">
+                        <datalist id="configSuggestions"><option value="No suggestions available"></option></datalist>
+                        <button class="icon-btn search-icon" title="Search configuration">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="more-options-container">
+                        <button class="icon-btn more-options-btn" title="More options">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                        <div id="bulkActionsMenu" class="bulk-actions-menu">
+                            <ul>
+                                <li id="bulkExportBtn">Export all configurations</li>
+                                <li id="bulkImportBtn">Import configurations</li>
+                                <li id="bulkRemoveActiveBtn" class="danger-item">Remove all configurations</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="sk-config-item">
-                  <div class="sk sk-line" style="width: 64%; height: 14px;"></div>
-                  <div class="sk sk-line sm" style="width: 86%;"></div>
+                <div class="config-list">
+                    <div class="config-list-desktop">
+                    </div>
+                    <div class="config-list-mobile">
+                        <select id="configuration-list" class="form-select">
+                            <option value="" disabled selected>Select a configuration</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="sk-config-item">
-                  <div class="sk sk-line" style="width: 78%; height: 14px;"></div>
-                  <div class="sk sk-line sm" style="width: 90%;"></div>
-                </div>
-                <div class="sk-config-item">
-                  <div class="sk sk-line" style="width: 58%; height: 14px;"></div>
-                  <div class="sk sk-line sm" style="width: 84%;"></div>
-                </div>
-                <div class="sk-config-item">
-                  <div class="sk sk-line" style="width: 70%; height: 14px;"></div>
-                  <div class="sk sk-line sm" style="width: 88%;"></div>
-                </div>
-              </div>
-
-              <!-- Mobile: dropdown/select placeholder instead of long list -->
-              <div class="config-list-mobile" style="display:none;" aria-hidden="true">
-                <div class="sk" style="width: 100%; height: 44px; border-radius: 12px;"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="config-details">
-            <div class="details-header">
-              <div class="details-header-top">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <div class="sk sk-line lg" style="width: 160px;"></div>
-                  <div class="sk sk-icon sm"></div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <div class="sk sk-line sm" style="width: 48px;"></div>
-                  <div class="sk sk-pill" style="width: 110px; height: 22px;"></div>
-                </div>
-              </div>
-              <div style="display:flex; gap:10px; align-items:center; justify-content:flex-start;">
-                <div class="sk sk-icon sm"></div>
-                <div class="sk sk-icon sm"></div>
-                <div class="sk sk-icon sm"></div>
-              </div>
             </div>
 
-            <div class="config-header-row">
-              <div class="config-name-input">
-                <div class="sk sk-label" style="width: 56px;"></div>
-                <div class="sk sk-pill" style="width: 100%;"></div>
-              </div>
-              <div class="config-url-input">
-                <div class="sk sk-label" style="width: 42px;"></div>
-                <div class="sk sk-pill" style="width: 100%;"></div>
-              </div>
-              <div class="config-init-wait-input">
-                <div class="sk sk-label" style="width: 92px;"></div>
-                <div class="sk sk-pill" style="width: 100%;"></div>
-              </div>
-            </div>
-
-            <div class="action-header">
-              <div class="sk sk-line" style="width: 90px;"></div>
-              <div class="sk sk-pill" style="width: 132px;"></div>
-            </div>
-
-            <div class="action-list-headers">
-              <div class="sk sk-line sm" style="width: 12px;"></div>
-              <div class="sk sk-line sm" style="width: 54px;"></div>
-              <div class="sk sk-line sm" style="width: 128px;"></div>
-              <div class="sk sk-line sm" style="width: 44px;"></div>
-              <div class="sk sk-line sm" style="width: 74px;"></div>
-              <div class="sk sk-line sm" style="width: 48px;"></div>
-              <div class="sk sk-line sm" style="width: 16px;"></div>
-            </div>
-
-            <div class="xpath-actions-table">
-              <div class="sk-row">
-                <div class="sk sk-pill" style="width: 42px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk-actions">
-                  <div class="sk sk-icon sm" style="width: 34px; height: 34px;"></div>
-                  <div class="sk sk-icon sm" style="width: 34px; height: 34px;"></div>
+            <div class="config-details">
+                <div class="details-header">
+                    <div class="details-header-top">
+                        <div class="settings-container">
+                            <span class="config-title-bold">Settings</span>
+                            <button id="settingsGearBtn" class="icon-btn settings-gear" title="Settings">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l0 0a2 2 0 0 1-2.83 2.83l0 0a1.65 1.65 0 0 0-1.82.33l0 0a1.65 1.65 0 0 0-.5 1.52l0 0a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2h0a1.65 1.65 0 0 0-1.52-.5l0 0a1.65 1.65 0 0 0-1.82-.33l0 0a2 2 0 0 1-2.83-2.83l0 0a1.65 1.65 0 0 0-.33-1.82l0 0a1.65 1.65 0 0 0-1.52-.5h0a2 2 0 0 1-2-2h0a2 2 0 0 1 2-2h0a1.65 1.65 0 0 0 1.52-.5l0 0a1.65 1.65 0 0 0 .33-1.82l0 0a2 2 0 0 1 2.83-2.83l0 0a1.65 1.65 0 0 0 1.82-.33l0 0a1.65 1.65 0 0 0 .5-1.52l0 0a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2h0a1.65 1.65 0 0 0 .5 1.52l0 0a1.65 1.65 0 0 0 1.82.33l0 0a2 2 0 0 1 2.83 2.83l0 0a1.65 1.65 0 0 0 .33 1.82l0 0a1.65 1.65 0 0 0 1.52.5h0a2 2 0 0 1 2 2h0a2 2 0 0 1-2 2h0a1.65 1.65 0 0 0-1.52.5z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="config-status">
+                            <span class="status-label">Status</span>
+                            <span id="extensionStatus" class="status-disabled">Disabled</span>
+                        </div>
+                    </div>
+                    <div class="header-action-icons">
+                        <button id="importConfigIconBtn" class="icon-btn" title="Import configurations">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </button>
+                            <button id="exportConfigIconBtn" class="icon-btn" title="Export configurations">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </button>
+                        <button id="scriptEditorIconBtn" class="icon-btn" title="UserScript editor">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                                    <path d="M7 9h10"></path>
+                                    <path d="M7 13h6"></path>
+                                    <path d="M7 17h4"></path>
+                                    <path d="M15 17l2 2 4-4"></path>
+                                </svg>
+                            </button>
+                        </div>
                 </div>
-              </div>
-              <div class="sk-divider"></div>
-              <div class="sk-row">
-                <div class="sk sk-pill" style="width: 42px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk-actions">
-                  <div class="sk sk-icon sm" style="width: 34px; height: 34px;"></div>
-                  <div class="sk sk-icon sm" style="width: 34px; height: 34px;"></div>
+                <div class="config-header-row">
+                    <div class="config-name-input">
+                        <label for="configName">Name</label>
+                        <input type="text" id="configName" value="">
+                    </div>
+                    <div class="config-url-input">
+                        <label for="configUrl">URL <span class="required">*</span></label>
+                        <input type="url" id="configUrl" value="">
+                    </div>
+                    <div class="config-init-wait-input">
+                        <label for="initWait">Initial delay (s)</label>
+                        <input type="number" id="initWait" value="0" min="0" step="0.1">
+                    </div>
                 </div>
-              </div>
-              <div class="sk-divider"></div>
-              <div class="sk-row">
-                <div class="sk sk-pill" style="width: 42px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk sk-pill" style="width: 100%; height: 34px;"></div>
-                <div class="sk-actions">
-                  <div class="sk sk-icon sm" style="width: 34px; height: 34px;"></div>
-                  <div class="sk sk-icon sm" style="width: 34px; height: 34px;"></div>
+                <div class="action-header">
+                    <span class="action-title">Actions</span>
+                    <div class="action-buttons-group">
+                        <button class="btn-add-action">
+                            Add action
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" height="16" width="16" style="margin-left: 6px;">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-              </div>
-
-              <div class="acfh-sr-only">Carregando configurações…</div>
+                <div class="action-list-headers">
+                    <div class="header-item header-num">#</div>
+                    <div class="header-item header-name">Name</div>
+                    <div class="header-item header-element-finder">Element selector
+                        <span class="info-icon" title="Element selector can be XPath or CSS selector.">i</span>
+                    </div>
+                    <div class="header-item header-mode">Mode</div>
+                    <div class="header-item header-interval-ms">Interval (ms)
+                        <span class="info-icon" title="Interval in milliseconds between repeats of this action.">i</span>
+                    </div>
+                    <div class="header-item header-repeat">Repeat</div>
+                    <div class="header-item header-actions"></div>
+                </div>
+                <div id="xpath-actions-container" class="xpath-actions-table">
+                </div>
             </div>
-          </div>
         </div>
-      </section>
-    </div>
-  </body>
+
+        <div id="actionConfigModal" class="modal">
+            <div class="modal-content action-modal">
+                <div class="modal-header">
+                    <div class="modal-title-group">
+                        <span class="modal-pill">Action</span>
+                        <h3 id="editActionTitle">#Edit action</h3>
+                    </div>
+                    <div class="mode-options">
+                        <span class="mode-label" id="editActionModeLabel">Default</span>
+                        <div class="mode-toggle-group">
+                            <input type="radio" id="defaultMode" name="actionMode" value="default" checked>
+                            <label for="defaultMode">Default</label>
+                            <input type="radio" id="mutationObserveMode" name="actionMode" value="mutationObserve" disabled>
+                            <label for="mutationObserveMode">
+                                Mutation Observe
+                                <span class="info-icon" title="Uses MutationObserver to detect the element as soon as it appears in the DOM. Requires Advanced mode and Force DOM.">i</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-header-icons">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-description" id="editActionDescription">Configure action details here. Set the value to fill, initial delay, and fill method.</p>
+                    <div class="input-group-modal">
+                        <label for="modalValueInput" id="editActionValueLabel">Value to fill</label>
+                        <input type="text" id="modalValueInput" placeholder="e.g., my_username" />
+                    </div>
+                    <div class="modal-options modal-row">
+                        <div class="input-group-modal small-input">
+                            <label for="modalActionInitialWait" id="editActionInitialDelayLabel" style="display: inline-flex; align-items: center; gap: 4px;">
+                                Initial delay (s)
+                                <span class="info-icon" id="editActionInitialDelayTooltip" title="Sets the initial delay for this action.">i</span>
+                            </label>
+                            <input type="number" id="modalActionInitialWait" value="0" min="0" step="0.1">
+                        </div>
+                        <div class="radio-group fill-method-group">
+                            <span class="radio-group-title" id="fillMethodTitle">Fill method</span>
+                            <div class="radio-pill-group">
+                                <input type="radio" id="pasteOption" name="fillMethod" value="paste" checked>
+                                <label for="pasteOption" id="editActionPasteLabel">Paste</label>
+                                <input type="radio" id="typeOption" name="fillMethod" value="type">
+                                <label for="typeOption" id="editActionTypeLabel">Type</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-save-modal" id="editActionSaveButton">Save</button>
+                    <button class="btn btn-danger btn-cancel-modal" id="editActionCancelButton">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <template id="xpath-action-template">
+            <div class="xpath-action-row">
+                <div class="col col-num"></div>
+                <div class="col col-name"><input type="text" class="input-inline" placeholder="Action name"></div>
+                <div class="col col-element-finder"><input type="text" class="input-inline" placeholder="e.g., //button[@id='start'] or button#start"></div>
+                <div class="col col-mode">
+                    <select class="action-mode-select">
+                        <option value="fill" data-i18n="modeFill">Fill</option>
+                        <option value="click" data-i18n="modeClick">Click</option>
+                    </select>
+                </div>
+                <div class="col col-interval-ms"><input type="number" class="input-inline" value="0.01" min="0.01" step="0.01"></div>
+                <div class="col col-repeat">
+                    <input type="number" class="input-inline" value="1" min="-2" list="repeatSuggestions">
+                    <datalist id="repeatSuggestions">
+                        <option value="1" label="1"></option>
+                        <option value="-2" label="Infinity"></option>
+                        <option value="3" label="3"></option>
+                    </datalist>
+                </div>
+                <div class="col col-actions">
+                    <button class="action-icon-btn delete-btn" title="Delete">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                        </svg>
+                    </button>
+                    <button class="action-icon-btn edit-btn" title="Edit">
+                        <svg class="svg-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="5" cy="12" r="1"></circle>
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <circle cx="19" cy="12" r="1"></circle>
+                        </svg>
+                        <svg class="svg-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <circle cx="12" cy="5" r="1"></circle>
+                            <circle cx="12" cy="19" r="1"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <template id="config-list-item-template">
+            <div class="config-list-item">
+                <div class="item-info">
+                    <span class="item-name"></span>
+                    <span class="item-url"></span>
+                </div>
+                <button class="item-delete icon-btn" title="Delete" style="background: transparent; border: none; padding: 0; margin: 0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                    </svg>
+                </button>
+            </div>
+        </template>
+
+        <template id="edit-action-menu-template">
+            <div class="edit-action-menu">
+                <ul>
+                    <li class="edit-action-option">
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit action
+                    </li>
+                    <li class="duplicate-action-option">
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                        </svg>
+                        Duplicate
+                    </li>
+                    <li class="disable-action-option">
+                        <span class="action-text">Disable</span>
+                    </li>
+                </ul>
+            </div>
+        </template>
+
+        <div id="settingsPopup" class="popup-modal">
+            <div class="popup-content">
+                <span id="closeSettingsPopup" class="close-btn">&times;</span>
+                <div class="settings-title-group">
+                    <span class="modal-pill">Settings</span>
+                    <h3>Settings</h3>
+                </div>
+                <div class="popup-body">
+                    <p></p>
+                    <!-- General -->
+                    <div class="input-group-modal">
+                        <label for="configMode">Configuration mode:</label>
+                        <select id="configMode" class="form-select">
+                            <option value="beginner" selected>Beginner</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <!-- Security (wrapped in div) -->
+                    <div id="securitySection">
+                        <h4>Features</h4>
+                        <div class="input-group-modal">
+                            <label for="contentScriptApi">Content Script:</label>
+                            <select id="contentScriptApi" class="form-select">
+                                <option value="dynamicUserScriptApi">None</option>
+                                <option value="userScriptApi">UserScripts</option>
+                            </select>
+                        </div>
+                        <div class="input-group-modal">
+                            <label for="sandboxMode">Sandbox mode:</label>
+                            <select id="sandboxMode" class="form-select">
+                                <option value="default" selected>Default</option>
+                                <option value="forceDOM">Force DOM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Blacklist -->
+                    <h4 id="blacklistTitle">Blacklist</h4>
+                    <div class="input-group-modal blacklist-group">
+                        <label for="blacklistSites">Blocked sites:</label>
+                        <textarea id="blacklistSites" class="blacklist-input" spellcheck="false">
+google.com
+facebook.com
+twitter.com
+instagram.com
+linkedin.com
+youtube.com
+                        </textarea>
+                    </div>
+<h4 class="title-with-icon">
+    Feedback
+    <span class="info-icon" title="When you enable FloatBox mode, a floating box appears in the bottom-right corner of the page showing actions in real time.">i</span>
+</h4>
+
+           <div class="feedback-options">
+                        <input type="radio" id="feedbackNone" name="feedbackMode" value="none" checked>
+                        <label for="feedbackNone">None</label>
+                        <input type="radio" id="feedbackFloatbox" name="feedbackMode" value="floatbox">
+                        <label for="feedbackFloatbox">FloatBox</label>
+                    </div>
+                </div>
+                <div class="popup-footer">
+                    <button class="btn btn-primary btn-save-popup">Save</button>
+                    <button class="btn btn-danger btn-cancel-popup">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                try {
+                    if (window.localStorage && localStorage.getItem('ACFH_DISABLE_ANALYTICS') === '1') return;
+                } catch (e) {
+                    // ignore
+                }
+
+                try {
+                    const key = 'acfh_pv_logged_options_v1';
+                    if (window.sessionStorage && sessionStorage.getItem(key) === '1') return;
+                    if (window.sessionStorage) sessionStorage.setItem(key, '1');
+                } catch (e) {
+                    // ignore
+                }
+
+                const page = 'options';
+
+                let source = 'web';
+                try {
+                    const sp = new URLSearchParams(location && location.search ? location.search : '');
+                    const srcParam = (sp.get('src') || '').toLowerCase();
+                    if (srcParam === 'extension') source = 'extension';
+                    else if (srcParam === 'web') source = 'web';
+                    else if (location && location.protocol === 'chrome-extension:') source = 'extension';
+                } catch (e) {
+                    // ignore
+                }
+
+                let clientId = '';
+                try {
+                    const k = 'acfh_client_id_v1';
+                    clientId = (window.localStorage && localStorage.getItem(k)) || '';
+                    if (!clientId) {
+                        if (window.crypto && typeof crypto.randomUUID === 'function') {
+                            clientId = crypto.randomUUID();
+                        } else {
+                            clientId = 'cid_' + Math.random().toString(16).slice(2) + '_' + Date.now().toString(16);
+                        }
+                        if (window.localStorage) localStorage.setItem(k, clientId);
+                    }
+                } catch (e) {
+                    clientId = '';
+                }
+
+                let origin = '';
+                try {
+                    origin = (window.localStorage && localStorage.getItem('ACFH_FLASK_ORIGIN')) || '';
+                } catch (e) {
+                    origin = '';
+                }
+
+                // Default to the current site origin (works when served via Render Flask /site/*).
+                // Fallback to Render if opened from a different host.
+                try {
+                    if (!origin && location && /^https?:$/.test(location.protocol)) origin = location.origin;
+                } catch (e) {
+                    // ignore
+                }
+
+                origin = (origin || 'https://extension-server-lv3j.onrender.com').replace(/\/+$/, '');
+                const qs = new URLSearchParams({
+                    page,
+                    source,
+                    cid: clientId,
+                    v: '1',
+                    t: String(Date.now()),
+                });
+                const url = origin + '/track/pageview?' + qs.toString();
+
+                // Use a GET "pixel" request (no CORS preflight, no body).
+                try {
+                    const img = new Image();
+                    img.referrerPolicy = 'no-referrer';
+                    img.src = url;
+                } catch (e) {
+                    // ignore
+                }
+
+                // Fallback: fire-and-forget fetch.
+                try {
+                    fetch(url, { method: 'GET', keepalive: true, mode: 'no-cors' }).catch(() => {});
+                } catch (e) {
+                    // ignore
+                }
+            })();
+        </script>
+
+        <script src="navbar.js"></script>
+        <script src="options.js"></script>
+        <script src="settings-processing.js"></script>
+    </section>
+</body>
 </html>
+
+
